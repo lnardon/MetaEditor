@@ -35,7 +35,13 @@ func main() {
     }
     path = strings.TrimSpace(path)
 
-	fmt.Print("Choose one of the following options:\n1. Organize music files\n2. Set release year\n3. Set Genre\n4. Set Artist\n5. Set Album\n6. Exit\n")
+	fmt.Println("Choose one of the following options:")
+	fmt.Println("1. Organize music files into its respective artist and album folders")
+	fmt.Println("2. Set release year")
+	fmt.Println("3. Set Genre")
+	fmt.Println("4. Set Artist")
+	fmt.Println("5. Set Album")
+	fmt.Println("6. Exit")
     opt, err := reader.ReadString('\n')
     if err != nil {
         fmt.Println("Error reading input:", err)
@@ -55,6 +61,8 @@ func main() {
 		SetAlbum(path)
 	case "6":
 		return
+	default:
+		fmt.Println("Invalid option")
 	}
 }
 
