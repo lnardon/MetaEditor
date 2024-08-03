@@ -51,7 +51,7 @@ func OrganizeMusicFiles() {
 			continue
 		}
 
-		artist := tag.Artist()
+		artist := strings.Split(tag.Artist(), "/")[0]
 		album := tag.Album()
 
 		artistPath := filepath.Join(path , artist)
@@ -79,5 +79,6 @@ func OrganizeMusicFiles() {
 		tag.Close()
 
 		fmt.Printf("Moved %s to %s\n", file, newPath)
+		fmt.Println("\n^ ^ ^")
 	}
 }
