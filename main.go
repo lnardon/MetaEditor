@@ -41,7 +41,8 @@ func main() {
 	fmt.Println("3. Set Genre")
 	fmt.Println("4. Set Artist")
 	fmt.Println("5. Set Album")
-	fmt.Println("6. Exit")
+	fmt.Println("6. Set Track Number")
+	fmt.Println("7. Exit")
     opt, err := reader.ReadString('\n')
     if err != nil {
         fmt.Println("Error reading input:", err)
@@ -60,9 +61,10 @@ func main() {
 	case "5":
 		SetAlbum(path)
 	case "6":
-		return
+		SetTrackNumber(path)
 	default:
-		fmt.Println("Invalid option")
+		fmt.Println("Exiting...")
+		return
 	}
 }
 
@@ -247,6 +249,50 @@ func SetAlbum(path string) {
 		tag.Close()
 
 		fmt.Printf("Set album %s for %s\n", album, file)
+		fmt.Println("^ ^ ^")
+	}
+}
+
+func SetTrackNumber(path string) {
+	files, err := getAllFilesInPath(path)
+	if err != nil {
+		log.Fatalf("Error fetching files: %v", err)
+	}
+
+	reader := bufio.NewReader(os.Stdin)
+	fmt.Print("What is the total number of tracks in the album: ")
+	totalAmount, err := reader.ReadString('\n')
+	if err != nil {
+		fmt.Println("Error reading input:", err)
+		return
+	}
+
+	for _, file := range files {
+		tag, err := id3v2.Open(file, id3v2.Options{Parse: true})
+		if err != nil {
+			log.Printf("Error opening file %s: %v", file, err)
+			continue
+		}
+
+		reader := bufio.NewReader(os.Stdin)
+		fmt.Println(tag.Title())
+		fmt.Print("Enter the track number for the track above: ")
+		track, err := reader.ReadString('\n')
+		if err != nil {
+			fmt.Println("Error reading input:", err)
+			return
+		}
+		track = strings.TrimSpace(track)
+
+		tag.AddTextFrame("TRCK", tag.DefaultEncoding(), fmt.Sprintf("%s/%s", track, totalAmount))
+		if err := tag.Save(); err != nil {
+			log.Printf("Error saving file %s: %v", file, err)
+			continue
+		}
+
+		tag.Close()
+
+		fmt.Printf("Set track number %s for %s\n", track, file)
 		fmt.Println("^ ^ ^")
 	}
 }
