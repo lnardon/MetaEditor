@@ -2,6 +2,10 @@
 
 A simple terminal application to edit your music files metadata and organize them in a structured way.
 
+<div align="center" width="100%">
+  <img src="./demo.gif" style="width: 100%; max-width: 64rem"/>
+</div>
+
 - Written in Golang
 - Follows the ID3v2 standard
 - MP3 files only
