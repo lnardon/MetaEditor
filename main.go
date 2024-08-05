@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"sync"
 
 	"github.com/bogem/id3v2/v2"
 )
@@ -48,6 +49,7 @@ func main() {
         fmt.Println("Error reading input:", err)
         return
     }
+	fmt.Print("\nStarting...\n\n")
 
 	switch strings.TrimSpace(opt) {
 	case "1":
@@ -128,24 +130,29 @@ func SetReleaseYear(path string) {
 	}
 	year = strings.TrimSpace(year)
 
+	var wg sync.WaitGroup
 	for _, file := range files {
-		tag, err := id3v2.Open(file, id3v2.Options{Parse: true})
-		if err != nil {
-			log.Printf("Error opening file %s: %v", file, err)
-			continue
-		}
+		wg.Add(1)
+		go func(file string) {
+			defer wg.Done()
+			tag, err := id3v2.Open(file, id3v2.Options{Parse: true})
+			if err != nil {
+				log.Printf("Error opening file %s: %v", file, err)
+				return
+			}
+			defer tag.Close()
 
-		tag.SetYear(year)
-		if err := tag.Save(); err != nil {
-			log.Printf("Error saving file %s: %v", file, err)
-			continue
-		}
+			tag.SetYear(year)
+			if err := tag.Save(); err != nil {
+				log.Printf("Error saving file %s: %v", file, err)
+				return
+			}
 
-		tag.Close()
-
-		fmt.Printf("Set release year %s for %s\n", year, file)
-		fmt.Println("^ ^ ^")
+			fmt.Printf("Set release year %s for %s\n", year, file)
+			fmt.Println("^ ^ ^")
+		}(file)
 	}
+	wg.Wait()
 }
 
 func SetGenre(path string) {
@@ -163,24 +170,30 @@ func SetGenre(path string) {
 	}
 	genre = strings.TrimSpace(genre)
 
+	var wg sync.WaitGroup
 	for _, file := range files {
+		wg.Add(1)
+		go func(file string){
+		defer wg.Done()
 		tag, err := id3v2.Open(file, id3v2.Options{Parse: true})
 		if err != nil {
 			log.Printf("Error opening file %s: %v", file, err)
-			continue
+			return
 		}
 
 		tag.SetGenre(genre)
 		if err := tag.Save(); err != nil {
 			log.Printf("Error saving file %s: %v", file, err)
-			continue
+			return
 		}
 
 		tag.Close()
 
 		fmt.Printf("Set genre %s for %s\n", genre, file)
 		fmt.Println("^ ^ ^")
+		}(file)
 	}
+	wg.Wait()
 }
 
 func SetArtist(path string) {
@@ -198,24 +211,30 @@ func SetArtist(path string) {
 	}
 	artist = strings.TrimSpace(artist)
 
+	var wg sync.WaitGroup
 	for _, file := range files {
+		wg.Add(1)
+		go func(file string){
+		defer wg.Done()
 		tag, err := id3v2.Open(file, id3v2.Options{Parse: true})
 		if err != nil {
 			log.Printf("Error opening file %s: %v", file, err)
-			continue
+			return
 		}
 
 		tag.SetArtist(artist)
 		if err := tag.Save(); err != nil {
 			log.Printf("Error saving file %s: %v", file, err)
-			continue
+			return
 		}
 
 		tag.Close()
 
 		fmt.Printf("Set artist %s for %s\n", artist, file)
 		fmt.Println("^ ^ ^")
+		}(file)
 	}
+	wg.Wait()
 }
 
 func SetAlbum(path string) {
@@ -233,24 +252,30 @@ func SetAlbum(path string) {
 	}
 	album = strings.TrimSpace(album)
 
+	var wg sync.WaitGroup
 	for _, file := range files {
+		wg.Add(1)
+		go func(file string){
+		defer wg.Done()
 		tag, err := id3v2.Open(file, id3v2.Options{Parse: true})
 		if err != nil {
 			log.Printf("Error opening file %s: %v", file, err)
-			continue
+			return
 		}
 
 		tag.SetAlbum(album)
 		if err := tag.Save(); err != nil {
 			log.Printf("Error saving file %s: %v", file, err)
-			continue
+			return
 		}
 
 		tag.Close()
 
 		fmt.Printf("Set album %s for %s\n", album, file)
 		fmt.Println("^ ^ ^")
+		}(file)
 	}
+	wg.Wait()
 }
 
 func SetTrackNumber(path string) {
