@@ -148,8 +148,9 @@ func SetReleaseYear(path string) {
 				return
 			}
 
-			fmt.Printf("Set release year %s for %s\n", year, file)
-			fmt.Println("^ ^ ^")
+			fmt.Println("vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv")
+			fmt.Printf("Set release year %s for %s\n", year, tag.Title())
+			fmt.Println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
 		}(file)
 	}
 	wg.Wait()
@@ -189,8 +190,9 @@ func SetGenre(path string) {
 
 		tag.Close()
 
-		fmt.Printf("Set genre %s for %s\n", genre, file)
-		fmt.Println("^ ^ ^")
+		fmt.Println("vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv")
+		fmt.Printf("Set genre %s for %s\n", genre, tag.Title())
+		fmt.Println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
 		}(file)
 	}
 	wg.Wait()
@@ -230,8 +232,9 @@ func SetArtist(path string) {
 
 		tag.Close()
 
-		fmt.Printf("Set artist %s for %s\n", artist, file)
-		fmt.Println("^ ^ ^")
+		fmt.Println("\n\nvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv")
+		fmt.Printf("Set artist %s for %s\n", artist, tag.Title())
+		fmt.Println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
 		}(file)
 	}
 	wg.Wait()
@@ -271,8 +274,9 @@ func SetAlbum(path string) {
 
 		tag.Close()
 
-		fmt.Printf("Set album %s for %s\n", album, file)
-		fmt.Println("^ ^ ^")
+		fmt.Println("vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv")
+		fmt.Printf("Set album %s for %s\n", album, tag.Title())
+		fmt.Println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
 		}(file)
 	}
 	wg.Wait()
@@ -317,7 +321,8 @@ func SetTrackNumber(path string) {
 
 		tag.Close()
 
-		fmt.Printf("Set track number %s for %s\n", track, file)
-		fmt.Println("^ ^ ^")
+		fmt.Println("vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv")
+		fmt.Printf("Set track number %s for %s\n", track, tag.Title())
+		fmt.Println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
 	}
 }
