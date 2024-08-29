@@ -16,7 +16,8 @@ func main() {
 	reader := bufio.NewReader(os.Stdin)
     path := os.Args[1]
 
-	fmt.Println("Ћ - Would you like to organize your music files or set metadata? (Type 'organize' or 'metadata' and press enter)")
+	fmt.Println("Ћ - Would you like to organize your music files or set metadata?")
+	fmt.Println("(Type 'organize' or 'metadata' and press enter)")
 
 	module, err := reader.ReadString('\n')
 	if err != nil {
@@ -34,7 +35,8 @@ func main() {
 		Utils.OrganizeMusicFiles(files, path)
 
 	case "metadata":
-		fmt.Println("\nЋ - Do you want to set metadata for all files in the folder or for a specific file? (Type 'all' or 'specific' and press enter)")
+		fmt.Println("\nЋ - Do you want to set metadata for all files in the folder or for a specific file?")
+		fmt.Println("(Type 'all' or 'specific' and press enter)")
 		
 		target, err := reader.ReadString('\n')
 		if err != nil {
