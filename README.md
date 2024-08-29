@@ -1,14 +1,14 @@
 # MetaEditor
 
-A simple terminal application to edit your music files metadata and organize them in a structured way.
+A simple terminal application to edit your mp3 music files metadata and organize them in a structured way.
+
+- ✅ Follows the ID3v2 standard
+- ❤️ Written in Golang
+- 🚀 Executes batch operations in Parallel
 
 <div align="center" width="100%">
-  <img src="./demo.gif" style="width: 100%; max-width: 64rem"/>
+  <img src="./demo.gif" style="width: 100%; max-width: 128rem"/>
 </div>
-
-- Written in Golang
-- Follows the ID3v2 standard
-- MP3 files only
 
 ## Installation
 
@@ -25,8 +25,8 @@ A simple terminal application to edit your music files metadata and organize the
     make build
 ```
 
-3. Run the app
+3. Run the app passing the path to the directory containing the mp3 files
 
 ```
-    ./main
+    ./main /path/to/mp3/files
 ```
