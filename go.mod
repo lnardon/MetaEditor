@@ -1,4 +1,4 @@
-module MetaEdito
+module MetaEditor
 
 go 1.22.5
 

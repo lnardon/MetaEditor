@@ -8,8 +8,8 @@ import (
 	"strconv"
 	"strings"
 
-	Metadata "MetaEdito/metadata"
-	Utils "MetaEdito/utils"
+	Metadata "MetaEditor/metadata"
+	Utils "MetaEditor/utils"
 )
 
 func main() {
