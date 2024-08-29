@@ -17,13 +17,14 @@ func main() {
     path := os.Args[1]
 
 	fmt.Println("Would you like to organize your music files or set metadata?(Type 'organize' or 'metadata' and press enter)")
-	opt, err := reader.ReadString('\n')
+
+	module, err := reader.ReadString('\n')
 	if err != nil {
 		fmt.Println("Error reading input:", err)
 		return
 	}
 
-	switch strings.TrimSpace(opt) {
+	switch strings.TrimSpace(module) {
 	case "organize":
 		files, err := Utils.GetAllFilesInPath(path)
 		if err != nil {
@@ -34,13 +35,14 @@ func main() {
 
 	case "metadata":
 		fmt.Println("Do you want to set metadata for all files in the folder or for a specific file?(Type 'all' or 'specific' and press enter)")
-		opt, err := reader.ReadString('\n')
+		
+		target, err := reader.ReadString('\n')
 		if err != nil {
 			fmt.Println("Error reading input:", err)
 			return
 		}
 
-		switch strings.TrimSpace(opt) {
+		switch strings.TrimSpace(target) {
 		case "all":
 			fmt.Println("Choose one of the following options:")
 			fmt.Println("1. Set release year")
@@ -85,7 +87,7 @@ func main() {
 			fmt.Println("5. Set Album")
 			fmt.Println("6. Set Track Number")
 
-			opt, err = reader.ReadString('\n')
+			opt, err := reader.ReadString('\n')
 			if err != nil {
 				fmt.Println("Error reading input:", err)
 				return
@@ -114,6 +116,7 @@ func main() {
 				fmt.Println("Error converting input to integer:", err)
 				return
 			}
+			
 			file := files[intOpt - 1]
 
 			switch strings.TrimSpace(opt) {
