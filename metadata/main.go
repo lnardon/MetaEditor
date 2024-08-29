@@ -13,13 +13,14 @@ import (
 
 func SetTitle(files []string) {
 	reader := bufio.NewReader(os.Stdin)
-	fmt.Print("Enter the title: ")
+	fmt.Print("\n Ћ - Enter the title: ")
 	title, err := reader.ReadString('\n')
 	if err != nil {
 		fmt.Println("Error reading input:", err)
 		return
 	}
 	title = strings.TrimSpace(title)
+	fmt.Println("")
 
 	var wg sync.WaitGroup
 	for _, file := range files {
@@ -39,9 +40,7 @@ func SetTitle(files []string) {
 				return
 			}
 
-			fmt.Println("vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv")
-			fmt.Printf("Set title %s for %s\n", title, tag.Title())
-			fmt.Println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
+			fmt.Printf("✅ Set title %s for %s\n", title, file)
 		}(file)
 	}
 
@@ -50,13 +49,14 @@ func SetTitle(files []string) {
 
 func SetReleaseYear(files []string) {
 	reader := bufio.NewReader(os.Stdin)
-	fmt.Print("Enter the release year: ")
+	fmt.Print("\n Ћ - Enter the release year: ")
 	year, err := reader.ReadString('\n')
 	if err != nil {
 		fmt.Println("Error reading input:", err)
 		return
 	}
 	year = strings.TrimSpace(year)
+	fmt.Println("")
 
 	var wg sync.WaitGroup
 	for _, file := range files {
@@ -76,9 +76,7 @@ func SetReleaseYear(files []string) {
 				return
 			}
 
-			fmt.Println("vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv")
-			fmt.Printf("Set release year %s for %s\n", year, tag.Title())
-			fmt.Println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
+			fmt.Printf("✅ Set release year %s for %s\n", year, file)
 		}(file)
 	}
 	wg.Wait()
@@ -86,13 +84,14 @@ func SetReleaseYear(files []string) {
 
 func SetGenre(files []string) {
 	reader := bufio.NewReader(os.Stdin)
-	fmt.Print("Enter the genre: ")
+	fmt.Print("\n Ћ - Enter the genre: ")
 	genre, err := reader.ReadString('\n')
 	if err != nil {
 		fmt.Println("Error reading input:", err)
 		return
 	}
 	genre = strings.TrimSpace(genre)
+	fmt.Println("")
 
 	var wg sync.WaitGroup
 	for _, file := range files {
@@ -113,9 +112,7 @@ func SetGenre(files []string) {
 
 			tag.Close()
 
-			fmt.Println("vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv")
-			fmt.Printf("Set genre %s for %s\n", genre, tag.Title())
-		fmt.Println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
+			fmt.Printf("✅ Set genre %s for %s\n", genre, file)
 		}(file)
 	}
 	wg.Wait()
@@ -123,13 +120,14 @@ func SetGenre(files []string) {
 
 func SetArtist(files []string) {
 	reader := bufio.NewReader(os.Stdin)
-	fmt.Print("Enter the artist: ")
+	fmt.Print("\n Ћ - Enter the artist: ")
 	artist, err := reader.ReadString('\n')
 	if err != nil {
 		fmt.Println("Error reading input:", err)
 		return
 	}
 	artist = strings.TrimSpace(artist)
+	fmt.Println("")
 
 	var wg sync.WaitGroup
 	for _, file := range files {
@@ -150,9 +148,7 @@ func SetArtist(files []string) {
 
 			tag.Close()
 
-			fmt.Println("\n\nvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv")
-			fmt.Printf("Set artist %s for %s\n", artist, tag.Title())
-			fmt.Println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
+			fmt.Printf("✅ Set artist %s for %s\n", artist, file)
 		}(file)
 	}
 	wg.Wait()
@@ -160,13 +156,14 @@ func SetArtist(files []string) {
 
 func SetAlbum(files []string) {
 	reader := bufio.NewReader(os.Stdin)
-	fmt.Print("Enter the album: ")
+	fmt.Print("\n Ћ - Enter the album: ")
 	album, err := reader.ReadString('\n')
 	if err != nil {
 		fmt.Println("Error reading input:", err)
 		return
 	}
 	album = strings.TrimSpace(album)
+	fmt.Println("")
 
 	var wg sync.WaitGroup
 	for _, file := range files {
@@ -187,9 +184,7 @@ func SetAlbum(files []string) {
 
 			tag.Close()
 
-			fmt.Println("vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv")
-			fmt.Printf("Set album %s for %s\n", album, tag.Title())
-			fmt.Println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
+			fmt.Printf("✅ Set album %s for %s\n", album, file)
 		}(file)
 	}
 	wg.Wait()
@@ -197,12 +192,13 @@ func SetAlbum(files []string) {
 
 func SetTrackNumber(files []string) {
 	reader := bufio.NewReader(os.Stdin)
-	fmt.Print("What is the total number of tracks in the album: ")
+	fmt.Print("\n Ћ - What is the total number of tracks in the album: ")
 	totalAmount, err := reader.ReadString('\n')
 	if err != nil {
 		fmt.Println("Error reading input:", err)
 		return
 	}
+	fmt.Println("")
 
 	for _, file := range files {
 		tag, err := id3v2.Open(file, id3v2.Options{Parse: true})
@@ -212,8 +208,8 @@ func SetTrackNumber(files []string) {
 		}
 
 		reader := bufio.NewReader(os.Stdin)
+		fmt.Print("\n Ћ - Enter the track number for the track below: \n")
 		fmt.Println(tag.Title())
-		fmt.Print("Enter the track number for the track above: ")
 		track, err := reader.ReadString('\n')
 		if err != nil {
 			fmt.Println("Error reading input:", err)
@@ -229,9 +225,8 @@ func SetTrackNumber(files []string) {
 
 		tag.Close()
 
-		fmt.Println("vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv")
-		fmt.Printf("Set track number %s for %s\n", track, tag.Title())
-		fmt.Println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
+		fmt.Println("")
+		fmt.Printf("✅ Set track number %s for %s\n", track, file)
 	}
 }
 

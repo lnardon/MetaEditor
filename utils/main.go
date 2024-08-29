@@ -59,7 +59,6 @@ func OrganizeMusicFiles(files []string, path string) {
 
 		tag.Close()
 
-		fmt.Printf("Moved %s to %s\n", file, newPath)
-		fmt.Println("^ ^ ^")
+		fmt.Printf("✅ Moved %s to %s\n", file, newPath)
 	}
 }

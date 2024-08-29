@@ -16,7 +16,7 @@ func main() {
 	reader := bufio.NewReader(os.Stdin)
     path := os.Args[1]
 
-	fmt.Println("Would you like to organize your music files or set metadata?(Type 'organize' or 'metadata' and press enter)")
+	fmt.Println("Ћ - Would you like to organize your music files or set metadata? (Type 'organize' or 'metadata' and press enter)")
 
 	module, err := reader.ReadString('\n')
 	if err != nil {
@@ -34,7 +34,7 @@ func main() {
 		Utils.OrganizeMusicFiles(files, path)
 
 	case "metadata":
-		fmt.Println("Do you want to set metadata for all files in the folder or for a specific file?(Type 'all' or 'specific' and press enter)")
+		fmt.Println("\nЋ - Do you want to set metadata for all files in the folder or for a specific file? (Type 'all' or 'specific' and press enter)")
 		
 		target, err := reader.ReadString('\n')
 		if err != nil {
@@ -44,12 +44,12 @@ func main() {
 
 		switch strings.TrimSpace(target) {
 		case "all":
-			fmt.Println("Choose one of the following options:")
-			fmt.Println("1. Set release year")
-			fmt.Println("2. Set Genre")
-			fmt.Println("3. Set Artist")
-			fmt.Println("4. Set Album")
-			fmt.Println("5. Set Track Number")
+			fmt.Println("\nЋ - Choose one of the following options:")
+			fmt.Println(" ☞ 1. Set release year")
+			fmt.Println(" ☞ 2. Set Genre")
+			fmt.Println(" ☞ 3. Set Artist")
+			fmt.Println(" ☞ 4. Set Album")
+			fmt.Println(" ☞ 5. Set Track Number")
 
 			opt, err := reader.ReadString('\n')
 			if err != nil {
@@ -79,13 +79,13 @@ func main() {
 			}
 
 		case "specific":
-			fmt.Println("Choose one of the following options:")
-			fmt.Println("1. Set track title")
-			fmt.Println("2. Set release year")
-			fmt.Println("3. Set Genre")
-			fmt.Println("4. Set Artist")
-			fmt.Println("5. Set Album")
-			fmt.Println("6. Set Track Number")
+			fmt.Println("\nЋ - Choose one of the following options:")
+			fmt.Println(" ☞ 1. Set track title")
+			fmt.Println(" ☞ 2. Set release year")
+			fmt.Println(" ☞ 3. Set Genre")
+			fmt.Println(" ☞ 4. Set Artist")
+			fmt.Println(" ☞ 5. Set Album")
+			fmt.Println(" ☞ 6. Set Track Number")
 
 			opt, err := reader.ReadString('\n')
 			if err != nil {
@@ -99,7 +99,7 @@ func main() {
 			}
 
 
-			fmt.Println("Type the number of the file you want to set metadata for:")
+			fmt.Println("\nЋ - Type the number of the file you want to set metadata for:")
 			
 			for i, file := range files {
 				fmt.Printf("%d. %s\n", i+1, file)
@@ -116,7 +116,7 @@ func main() {
 				fmt.Println("Error converting input to integer:", err)
 				return
 			}
-			
+
 			file := files[intOpt - 1]
 
 			switch strings.TrimSpace(opt) {
