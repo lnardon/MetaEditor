@@ -6,8 +6,10 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
-	"sync"
+
+	Metadata "MetaEdito/metadata"
 
 	"github.com/bogem/id3v2/v2"
 )
@@ -28,46 +30,128 @@ func getAllFilesInPath(path string) ([]string, error) {
 
 func main() {
 	reader := bufio.NewReader(os.Stdin)
-    fmt.Print("Enter the folder path here: ")
-    path, err := reader.ReadString('\n')
-    if err != nil {
-        fmt.Println("Error reading input:", err)
-        return
-    }
-    path = strings.TrimSpace(path)
+    path := os.Args[1]
 
-	fmt.Println("Choose one of the following options:")
-	fmt.Println("1. Organize music files into its respective artist and album folders")
-	fmt.Println("2. Set release year")
-	fmt.Println("3. Set Genre")
-	fmt.Println("4. Set Artist")
-	fmt.Println("5. Set Album")
-	fmt.Println("6. Set Track Number")
-	fmt.Println("7. Exit")
-    opt, err := reader.ReadString('\n')
-    if err != nil {
-        fmt.Println("Error reading input:", err)
-        return
-    }
-	fmt.Print("\nStarting...\n\n")
-
-	switch strings.TrimSpace(opt) {
-	case "1":
-		OrganizeMusicFiles(path)
-	case "2":
-		SetReleaseYear(path)
-	case "3":
-		SetGenre(path)
-	case "4":
-		SetArtist(path)
-	case "5":
-		SetAlbum(path)
-	case "6":
-		SetTrackNumber(path)
-	default:
-		fmt.Println("Exiting...")
+	fmt.Println("Would you like to organize your music files or set metadata?(Type 'organize' or 'metadata' and press enter)")
+	opt, err := reader.ReadString('\n')
+	if err != nil {
+		fmt.Println("Error reading input:", err)
 		return
 	}
+
+	switch strings.TrimSpace(opt) {
+	case "organize":
+		OrganizeMusicFiles(path)
+	case "metadata":
+		fmt.Println("Do you want to set metadata for all files in the folder or for a specific file?(Type 'all' or 'specific' and press enter)")
+		opt, err := reader.ReadString('\n')
+		if err != nil {
+			fmt.Println("Error reading input:", err)
+			return
+		}
+
+		switch strings.TrimSpace(opt) {
+		case "all":
+			fmt.Println("Choose one of the following options:")
+			fmt.Println("1. Set release year")
+			fmt.Println("2. Set Genre")
+			fmt.Println("3. Set Artist")
+			fmt.Println("4. Set Album")
+			fmt.Println("5. Set Track Number")
+
+			opt, err := reader.ReadString('\n')
+			if err != nil {
+				fmt.Println("Error reading input:", err)
+				return
+			}
+
+			files, err := getAllFilesInPath(path)
+			if err != nil {
+				log.Fatalf("Error fetching files: %v", err)
+			}
+
+			switch strings.TrimSpace(opt) {
+			case "1":
+				Metadata.SetReleaseYear(files)
+			case "2":
+				Metadata.SetGenre(files)
+			case "3":
+				Metadata.SetArtist(files)
+			case "4":
+				Metadata.SetAlbum(files)
+			case "5":
+				Metadata.SetTrackNumber(files)
+			default:
+				fmt.Println("Exiting...")
+				return
+			}
+
+		case "specific":
+			fmt.Println("Choose one of the following options:")
+			fmt.Println("1. Set track title")
+			fmt.Println("2. Set release year")
+			fmt.Println("3. Set Genre")
+			fmt.Println("4. Set Artist")
+			fmt.Println("5. Set Album")
+			fmt.Println("6. Set Track Number")
+
+			opt, err = reader.ReadString('\n')
+			if err != nil {
+				fmt.Println("Error reading input:", err)
+				return
+			}
+
+			files, err := getAllFilesInPath(os.Args[1])
+			if err != nil {
+				log.Fatalf("Error fetching files: %v", err)
+			}
+
+
+			fmt.Println("Type the number of the file you want to set metadata for:")
+			
+			for i, file := range files {
+				fmt.Printf("%d. %s\n", i+1, file)
+			}
+
+			fileOption, err := reader.ReadString('\n')
+			if err != nil {
+				fmt.Println("Error reading input:", err)
+				return
+			}
+
+			intOpt, err := strconv.Atoi(strings.TrimSpace(fileOption))
+			if err != nil {
+				fmt.Println("Error converting input to integer:", err)
+				return
+			}
+			file := files[intOpt - 1]
+
+			switch strings.TrimSpace(opt) {
+			case "1":
+				Metadata.SetTitle([]string{file})
+			case "2":
+				Metadata.SetReleaseYear([]string{file})
+			case "3":
+				Metadata.SetGenre([]string{file})
+			case "4":
+				Metadata.SetArtist([]string{file})
+			case "5":
+				Metadata.SetAlbum([]string{file})
+			case "6":
+				Metadata.SetTrackNumber([]string{file})
+			default:
+				fmt.Println("Exiting...")
+				return
+			}
+
+		default:
+			fmt.Println("Invalid option")
+		}
+	default:
+		fmt.Println("Invalid option")
+	}
+
+
 }
 
 func OrganizeMusicFiles(path string) {
@@ -112,217 +196,5 @@ func OrganizeMusicFiles(path string) {
 
 		fmt.Printf("Moved %s to %s\n", file, newPath)
 		fmt.Println("^ ^ ^")
-	}
-}
-
-func SetReleaseYear(path string) {
-	files, err := getAllFilesInPath(path)
-	if err != nil {
-		log.Fatalf("Error fetching files: %v", err)
-	}
-
-	reader := bufio.NewReader(os.Stdin)
-	fmt.Print("Enter the release year: ")
-	year, err := reader.ReadString('\n')
-	if err != nil {
-		fmt.Println("Error reading input:", err)
-		return
-	}
-	year = strings.TrimSpace(year)
-
-	var wg sync.WaitGroup
-	for _, file := range files {
-		wg.Add(1)
-		go func(file string) {
-			defer wg.Done()
-			tag, err := id3v2.Open(file, id3v2.Options{Parse: true})
-			if err != nil {
-				log.Printf("Error opening file %s: %v", file, err)
-				return
-			}
-			defer tag.Close()
-
-			tag.SetYear(year)
-			if err := tag.Save(); err != nil {
-				log.Printf("Error saving file %s: %v", file, err)
-				return
-			}
-
-			fmt.Println("vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv")
-			fmt.Printf("Set release year %s for %s\n", year, tag.Title())
-			fmt.Println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
-		}(file)
-	}
-	wg.Wait()
-}
-
-func SetGenre(path string) {
-	files, err := getAllFilesInPath(path)
-	if err != nil {
-		log.Fatalf("Error fetching files: %v", err)
-	}
-
-	reader := bufio.NewReader(os.Stdin)
-	fmt.Print("Enter the genre: ")
-	genre, err := reader.ReadString('\n')
-	if err != nil {
-		fmt.Println("Error reading input:", err)
-		return
-	}
-	genre = strings.TrimSpace(genre)
-
-	var wg sync.WaitGroup
-	for _, file := range files {
-		wg.Add(1)
-		go func(file string){
-		defer wg.Done()
-		tag, err := id3v2.Open(file, id3v2.Options{Parse: true})
-		if err != nil {
-			log.Printf("Error opening file %s: %v", file, err)
-			return
-		}
-
-		tag.SetGenre(genre)
-		if err := tag.Save(); err != nil {
-			log.Printf("Error saving file %s: %v", file, err)
-			return
-		}
-
-		tag.Close()
-
-		fmt.Println("vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv")
-		fmt.Printf("Set genre %s for %s\n", genre, tag.Title())
-		fmt.Println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
-		}(file)
-	}
-	wg.Wait()
-}
-
-func SetArtist(path string) {
-	files, err := getAllFilesInPath(path)
-	if err != nil {
-		log.Fatalf("Error fetching files: %v", err)
-	}
-
-	reader := bufio.NewReader(os.Stdin)
-	fmt.Print("Enter the artist: ")
-	artist, err := reader.ReadString('\n')
-	if err != nil {
-		fmt.Println("Error reading input:", err)
-		return
-	}
-	artist = strings.TrimSpace(artist)
-
-	var wg sync.WaitGroup
-	for _, file := range files {
-		wg.Add(1)
-		go func(file string){
-		defer wg.Done()
-		tag, err := id3v2.Open(file, id3v2.Options{Parse: true})
-		if err != nil {
-			log.Printf("Error opening file %s: %v", file, err)
-			return
-		}
-
-		tag.SetArtist(artist)
-		if err := tag.Save(); err != nil {
-			log.Printf("Error saving file %s: %v", file, err)
-			return
-		}
-
-		tag.Close()
-
-		fmt.Println("\n\nvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv")
-		fmt.Printf("Set artist %s for %s\n", artist, tag.Title())
-		fmt.Println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
-		}(file)
-	}
-	wg.Wait()
-}
-
-func SetAlbum(path string) {
-	files, err := getAllFilesInPath(path)
-	if err != nil {
-		log.Fatalf("Error fetching files: %v", err)
-	}
-
-	reader := bufio.NewReader(os.Stdin)
-	fmt.Print("Enter the album: ")
-	album, err := reader.ReadString('\n')
-	if err != nil {
-		fmt.Println("Error reading input:", err)
-		return
-	}
-	album = strings.TrimSpace(album)
-
-	var wg sync.WaitGroup
-	for _, file := range files {
-		wg.Add(1)
-		go func(file string){
-		defer wg.Done()
-		tag, err := id3v2.Open(file, id3v2.Options{Parse: true})
-		if err != nil {
-			log.Printf("Error opening file %s: %v", file, err)
-			return
-		}
-
-		tag.SetAlbum(album)
-		if err := tag.Save(); err != nil {
-			log.Printf("Error saving file %s: %v", file, err)
-			return
-		}
-
-		tag.Close()
-
-		fmt.Println("vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv")
-		fmt.Printf("Set album %s for %s\n", album, tag.Title())
-		fmt.Println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
-		}(file)
-	}
-	wg.Wait()
-}
-
-func SetTrackNumber(path string) {
-	files, err := getAllFilesInPath(path)
-	if err != nil {
-		log.Fatalf("Error fetching files: %v", err)
-	}
-
-	reader := bufio.NewReader(os.Stdin)
-	fmt.Print("What is the total number of tracks in the album: ")
-	totalAmount, err := reader.ReadString('\n')
-	if err != nil {
-		fmt.Println("Error reading input:", err)
-		return
-	}
-
-	for _, file := range files {
-		tag, err := id3v2.Open(file, id3v2.Options{Parse: true})
-		if err != nil {
-			log.Printf("Error opening file %s: %v", file, err)
-			continue
-		}
-
-		reader := bufio.NewReader(os.Stdin)
-		fmt.Println(tag.Title())
-		fmt.Print("Enter the track number for the track above: ")
-		track, err := reader.ReadString('\n')
-		if err != nil {
-			fmt.Println("Error reading input:", err)
-			return
-		}
-		track = strings.TrimSpace(track)
-
-		tag.AddTextFrame("TRCK", tag.DefaultEncoding(), fmt.Sprintf("%s/%s", track, totalAmount))
-		if err := tag.Save(); err != nil {
-			log.Printf("Error saving file %s: %v", file, err)
-			continue
-		}
-
-		tag.Close()
-
-		fmt.Println("vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv")
-		fmt.Printf("Set track number %s for %s\n", track, tag.Title())
-		fmt.Println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
 	}
 }
